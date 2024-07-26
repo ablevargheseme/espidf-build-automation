@@ -2,7 +2,7 @@ name: Build ESP-IDF Project
 
 on: 
   push:
-    branches: [ main ]  # Replace 'main' with your desired branch
+    branches: [ main ]
 
 jobs:
   build:
@@ -17,5 +17,17 @@ jobs:
             -v ${{ github.workspace }}:/project \
             -w /project \
             -e HOME=/tmp \
-            espressif/idf:latest \
+            espressif/idf:release-v4.4 \
             /bin/bash -c "idf.py build"
+
+      - name: Create action_build directory
+        run: mkdir -p action_build
+
+      - name: Move blink.bin to action_build directory
+        run: mv build/blink.bin action_build/
+
+      - name: Upload blink.bin artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: blink-bin
+          path: action_build/blink.bin
