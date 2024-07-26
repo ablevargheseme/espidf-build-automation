@@ -17,5 +17,5 @@ jobs:
             -v ${{ github.workspace }}:/project \
             -w /project \
             -e HOME=/tmp \
-            espressif/idf:release-v4.4 \
+            espressif/idf:latest \
             /bin/bash -c "idf.py build"
