@@ -20,4 +20,4 @@ jobs:
             echo "Setting up Git..."
             git config --global --add safe.directory "*"
             echo "Running command..."
-            idf.py build
+            /path/to/idf.py build  # Use the full path if needed
