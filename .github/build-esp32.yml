@@ -25,12 +25,16 @@ on:
   push:
     branches: [ main ]  # Replace 'main' with your desired branch
 
-runs:
-  using: "composite"
-  steps:
-    - run: |
-        export IDF_TARGET=$(echo "${{ inputs.target }}" | tr '[:upper:]' '[:lower:]' | tr -d '_-')
-        docker run -t -e IDF_TARGET="${IDF_TARGET}" -v "${GITHUB_WORKSPACE}:/app/${{ github.repository }}" \
-        -w "/app/${{ github.repository }}/${{ inputs.path }}" espressif/idf:${{ inputs.esp_idf_version }} \
-        /bin/bash -c 'echo "Setting up Git..."; git config --global --add safe.directory "*" && echo "Running command..."; ${{ inputs.command }}'
-      shell: bash
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Set up Docker Build Environment
+        run: |
+          IDF_TARGET=$(echo "${{ inputs.target }}" | tr '[:upper:]' '[:lower:]' | tr -d '_-')
+          docker run --rm -v "${{ github.workspace }}:/project" -w "/project/${{ inputs.path }}" \
+          -u $(id -u):$(id -g) -e HOME=/tmp espressif/idf:${{ inputs.esp_idf_version }} \
+          /bin/bash -c 'echo "Setting up Git..."; git config --global --add safe.directory "*" && echo "Running command..."; ${{ inputs.command }}'
