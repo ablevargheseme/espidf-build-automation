@@ -1,4 +1,4 @@
-name: "Build ESP-IDF Project"
+name: Build ESP-IDF Project
 
 on: 
   push:
@@ -11,13 +11,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Run the build process with Docker
+      - name: Run Docker to Build ESP-IDF Project
         uses: addnab/docker-run-action@v3
         with:
-          image: espressif/idf:latest
-          options: -v ${{ github.workspace }}:/project -w /project
-          run: |
-            echo "Setting up Git..."
-            git config --global --add safe.directory "*"
-            echo "Running command..."
-            /path/to/idf.py build  # Use the full path if needed
+          image: espressif/idf:release-v4.4
+          options: -v ${{ github.workspace }}:/project -w /project -u $(id -u):$(id -g) -e HOME=/tmp
+          run: idf.py build
