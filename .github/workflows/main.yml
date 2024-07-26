@@ -19,7 +19,7 @@ jobs:
             -e HOME=/tmp \
             espressif/idf:latest \
             /bin/bash -c "idf.py build"
-       - name: Create action_build directory
+      - name: Create action_build directory
         run: mkdir -p action_build
 
       - name: Move blink.bin to action_build directory
