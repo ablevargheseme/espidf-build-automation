@@ -19,6 +19,10 @@ jobs:
             -e HOME=/tmp \
             espressif/idf:latest \
             /bin/bash -c "idf.py build"
+
+      - name: Set permissions for build output
+        run: sudo chown -R $USER:$USER build/
+
       - name: Create action_build directory
         run: mkdir -p action_build
 
