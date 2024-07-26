@@ -15,13 +15,11 @@ jobs:
         run: |
           curl -fsSL https://get.docker.com -o get-docker.sh
           sudo sh get-docker.sh
-          sudo usermod -aG docker $USER
 
       - name: Start Docker Service
         run: |
           sudo systemctl start docker
           sudo systemctl enable docker
-          sudo systemctl status docker
 
       - name: Set up Docker Build Environment
         env:
@@ -30,7 +28,7 @@ jobs:
           ESP_IDF_VERSION: latest
           COMMAND: idf.py build
         run: |
-          docker run --rm -v "${{ github.workspace }}:/project" -w "/project/${{ env.PATH }}" \
+          sudo docker run --rm -v "${{ github.workspace }}:/project" -w "/project/${{ env.PATH }}" \
           -e HOME=/tmp espressif/idf:${{ env.ESP_IDF_VERSION }} \
           /bin/bash -c 'echo "Setting up Git..."; git config --global --add safe.directory "*" && echo "Running command..."; ${{ env.COMMAND }}'
         shell: bash
