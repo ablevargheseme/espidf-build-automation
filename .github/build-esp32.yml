@@ -23,7 +23,7 @@ inputs:
 
 on:
   push:
-    branches: [ your_branch_name ]  # Replace with your actual branch
+    branches: [ main ]  # Replace 'main' with your desired branch
 
 runs:
   using: "composite"
@@ -33,4 +33,4 @@ runs:
         docker run -t -e IDF_TARGET="${IDF_TARGET}" -v "${GITHUB_WORKSPACE}:/app/${{ github.repository }}" \
         -w "/app/${{ github.repository }}/${{ inputs.path }}" espressif/idf:${{ inputs.esp_idf_version }} \
         /bin/bash -c 'echo "Setting up Git..."; git config --global --add safe.directory "*" && echo "Running command..."; ${{ inputs.command }}'
-        shell: bash
+      shell: bash
