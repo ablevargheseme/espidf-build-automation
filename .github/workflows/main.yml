@@ -10,11 +10,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      
+
       - name: Set up Docker Build Environment
+        env:
+          IDF_TARGET: ${{ inputs.target || 'esp32' }}
+          PATH: ${{ inputs.path || '.' }}
+          ESP_IDF_VERSION: ${{ inputs.esp_idf_version || 'latest' }}
+          COMMAND: ${{ inputs.command || 'idf.py build' }}
         run: |
-          IDF_TARGET=$(echo "${{ inputs.target }}" | tr '[:upper:]' '[:lower:]' | tr -d '_-')
-          docker run --rm -v "${{ github.workspace }}:/project" -w "/project/${{ inputs.path }}" \
-          -u $(id -u):$(id -g) -e HOME=/tmp espressif/idf:${{ inputs.esp_idf_version }} \
-          /bin/bash -c 'echo "Setting up Git..."; git config --global --add safe.directory "*" && echo "Running command..."; ${{ inputs.command }}'
+          docker run --rm -v "${{ github.workspace }}:/project" -w "/project/${{ env.PATH }}" \
+          -e HOME=/tmp espressif/idf:${{ env.ESP_IDF_VERSION }} \
+          /bin/bash -c 'echo "Setting up Git..."; git config --global --add safe.directory "*" && echo "Running command..."; ${{ env.COMMAND }}'
         shell: bash
