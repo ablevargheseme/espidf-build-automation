@@ -15,35 +15,6 @@ jobs:
         run: |
           curl -fsSL https://get.docker.com -o get-docker.sh
           sudo sh get-docker.sh
-
-      - name: Set up Docker Build Environment
-        env:
-          IDF_TARGET: ${{ inputs.target || 'esp32' }}
-          PATH: ${{ inputs.path || '.' }}
-          ESP_IDF_VERSION: ${{ inputs.esp_idf_version || 'latest' }}
-          COMMAND: ${{ inputs.command || 'idf.py build' }}
-        run: |
-          docker run --rm -v "${{ github.workspace }}:/project" -w "/project/${{ env.PATH }}" \
-          -e HOME=/tmp espressif/idf:${{ env.ESP_IDF_VERSION }} \
-          /bin/bash -c 'echo "Setting up Git..."; git config --global --add safe.directory "*" && echo "Running command..."; ${{ env.COMMAND }}'
-        shell: bash
-name: "Build ESP-IDF Project"
-
-on: 
-  push:
-    branches: [ main ]  # Replace 'main' with your desired branch
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Install Docker
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sudo sh get-docker.sh
           sudo usermod -aG docker $USER
 
       - name: Start Docker Service
