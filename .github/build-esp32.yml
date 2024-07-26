@@ -21,7 +21,7 @@ inputs:
     default: "idf.py build"
     required: false
 
-on:
+on: 
   push:
     branches: [ main ]  # Replace 'main' with your desired branch
 
@@ -38,3 +38,4 @@ jobs:
           docker run --rm -v "${{ github.workspace }}:/project" -w "/project/${{ inputs.path }}" \
           -u $(id -u):$(id -g) -e HOME=/tmp espressif/idf:${{ inputs.esp_idf_version }} \
           /bin/bash -c 'echo "Setting up Git..."; git config --global --add safe.directory "*" && echo "Running command..."; ${{ inputs.command }}'
+        shell: bash
