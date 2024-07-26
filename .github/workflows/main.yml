@@ -11,24 +11,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install Docker
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sudo sh get-docker.sh
-
-      - name: Start Docker Service
-        run: |
-          sudo systemctl start docker
-          sudo systemctl enable docker
-
-      - name: Set up Docker Build Environment
-        env:
-          IDF_TARGET: esp32
-          PATH: .
-          ESP_IDF_VERSION: latest
-          COMMAND: idf.py build
-        run: |
-          sudo docker run --rm -v "${{ github.workspace }}:/project" -w "/project/${{ env.PATH }}" \
-          -e HOME=/tmp espressif/idf:${{ env.ESP_IDF_VERSION }} \
-          /bin/bash -c 'echo "Setting up Git..."; git config --global --add safe.directory "*" && echo "Running command..."; ${{ env.COMMAND }}'
-        shell: bash
+      - name: Run the build process with Docker
+        uses: addnab/docker-run-action@v3
+        with:
+          image: espressif/idf:latest
+          options: -v ${{ github.workspace }}:/project -w /project
+          run: |
+            echo "Setting up Git..."
+            git config --global --add safe.directory "*"
+            echo "Running command..."
+            idf.py build
