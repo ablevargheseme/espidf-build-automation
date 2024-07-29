@@ -11,41 +11,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Validate tag
-        run: |
-          # Get the new tag from the GITHUB_REF environment variable
-          new_tag=${GITHUB_REF#refs/tags/}
-          echo "New tag: $new_tag"
-
-          # Function to convert version string to numerical value
-          version_to_number() {
-            IFS='.' read -r major minor patch <<< "${1#v}"
-            echo $((major * 1000 + minor * 100 + patch))
-          }
-
-          # Calculate the version number of the new tag
-          new_tag_number=$(version_to_number "$new_tag")
-          echo "New tag number: $new_tag_number"
-
-          # Get all existing tags and find the maximum version number
-          existing_tags=$(git tag -l 'v*' | sort -V)
-          echo "Existing tags: $existing_tags"
-
-          max_version_number=0
-          for tag in $existing_tags; do
-            tag_number=$(version_to_number "$tag")
-            if [ "$tag_number" -gt "$max_version_number" ]; then
-              max_version_number=$tag_number
-            fi
-          done
-          echo "Max version number: $max_version_number"
-
-          # Compare the new tag number with the max version number
-          if [ "$new_tag_number" -le "$max_version_number" ]; then
-            echo "Error: New tag ($new_tag) must be greater than the latest existing tag version number ($max_version_number)"
-            exit 1
-          fi
-
       - name: Build ESP-IDF Project
         run: |
           docker run --rm \
