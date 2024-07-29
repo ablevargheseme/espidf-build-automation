@@ -10,6 +10,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
       - name: Validate tag
         run: |
           # Get the new tag from the GITHUB_REF environment variable
@@ -44,6 +45,7 @@ jobs:
             echo "Error: New tag ($new_tag) must be greater than the latest existing tag version number ($max_version_number)"
             exit 1
           fi
+
       - name: Build ESP-IDF Project
         run: |
           docker run --rm \
